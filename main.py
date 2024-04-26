@@ -1,5 +1,57 @@
 
+import os
+import book
+import user
+import author
+import genre
+
+def load_file(filename):
+    if os.path.exists(f"\\Files\\{filename}"):
+        try:
+            with open(f"\\Files\\{filename}", "r") as file:
+                if filename == "books.txt":
+                    book_dict = {}
+                    for line in file:
+                        title = 
+                        author = 
+                        ISBN = 
+                        genre = 
+                        publication_date = 
+                        book.book_collection_add(book_dict, title, author, ISBN, genre, publication_date)
+                        return book_dict
+                elif filename == "user.txt":
+                    user_dict = {}
+                    return user_dict
+                elif filename == "authors.txt":
+                    authors_dict = []
+                    return authors_dict
+                elif filename == "genres.txt":
+                    user_dict = {}
+                    return user_dict
+        except:
+            print(f"File error for \'{filename}\'")
+    else:
+        try:
+            with open(f"\\Files\\{filename}", "w") as file:
+                pass
+        except:
+            print(f"Path issue for \'\\Files\\{filename}\'")
+
+        if filename == "books.txt":
+            return {}
+        elif filename == "users.txt":
+            return {}
+        elif filename == "authors.txt":
+            return []
+        elif filename == "genres.txt":
+            return set()
+
 def main():
+    book_collection = load_file("books.txt") # {ISBN : Book}
+    user_collection = load_file("users.txt") # {UUID : User}
+    author_collection = load_file("authors.txt") # [Author]
+    genre_collection = load_file("genres.txt") # (Genre)
+
     while True:
         print("Main Menu:")
         print("1. Book Operations")
@@ -30,7 +82,7 @@ def menu_book_ops():
     while True:
         print("Book Operations:")
         print("1. Add a new book")
-        print("2. Borrow/Reservse a book")
+        print("2. Borrow/Reserve a book")
         print("3. Return a book")
         print("4. Search for a book")
         print("5. Display all books")
@@ -42,7 +94,12 @@ def menu_book_ops():
             continue
 
         if choice == 1:
-            book_add()
+            title = 
+            author = 
+            ISBN = 
+            genre = 
+            publication_date = 
+            book_collection = book.book_collection_add(book_collection, title, author, ISBN, genre, publication_date)
         elif choice == 2:
             book_borrow()
         elif choice == 3:

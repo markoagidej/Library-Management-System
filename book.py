@@ -37,3 +37,8 @@ class Book:
             self.reserve_list.pop(0)
         else:
             self.available = True
+
+def book_collection_add(self, collection, title, author, ISBN, genre, publication_date):
+    new_book = Book(title, author, ISBN, genre, publication_date)
+    collection[ISBN] = new_book
+    return collection
