@@ -31,14 +31,17 @@ class Book:
             choice = input("Would you like to be put on the reserve list for this book? (y/n)")
             if choice == "y":
                 self.reserve_list.append(user_ID)
+        return self
 
     def return_book(self):
         if self.reserve_list:
-            self.reserve_list.pop(0)
+            new_borrower = self.reserve_list.pop(0)
         else:
+            new_borrower = ""
             self.available = True
+        return self, new_borrower
 
-def book_collection_add(self, collection, title, author, ISBN, genre, publication_date):
+def book_collection_add(collection, title, author, ISBN, genre, publication_date):
     new_book = Book(title, author, ISBN, genre, publication_date)
     collection[ISBN] = new_book
     return collection
