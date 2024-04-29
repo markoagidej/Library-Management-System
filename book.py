@@ -35,11 +35,11 @@ class Book:
 
     def return_book(self):
         if self.reserve_list:
-            new_borrower = self.reserve_list.pop(0)
+            next_reserved_user = self.reserve_list.pop(0)
         else:
-            new_borrower = ""
-            self.available = True
-        return self, new_borrower
+            next_reserved_user = ""
+        self.available = True
+        return self, next_reserved_user
 
 def book_collection_add(collection, title, author, ISBN, genre, publication_date):
     new_book = Book(title, author, ISBN, genre, publication_date)

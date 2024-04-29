@@ -48,6 +48,16 @@ def load_file(filename):
         elif filename == "genres.txt":
             return set()
 
+def save_books_file():
+    with open(f"\\Files\\books.txt", "w") as file:
+        for book in book_collection:
+            file.write(text_deliniator.join(book.get_title, book.get_author, book.get_ISBN, book.get_genre, book.get_publication_date))
+            
+def save_users_file():
+    with open(f"\\Files\\users.txt", "w") as file:
+        for user in user_collection:
+            file.write(text_deliniator.join(user.get_name, user.get_UUID, user.get_borrow_history))
+
 def main():
     book_collection = load_file("books.txt")
     user_collection = load_file("users.txt")
@@ -81,10 +91,6 @@ def main():
             exit()
 
 def menu_book_ops():
-    def save_books_file():
-        with open(f"\\Files\\books.txt", "w") as file:
-            for book in book_collection:
-                file.write(text_deliniator.join(book.get_title, book.get_author, book.get_ISBN, book.get_genre, book.get_publication_date))
     while True:
         print("Book Operations:")
         print("1. Add a new book")
@@ -124,19 +130,23 @@ def menu_book_ops():
                 continue
             
             book_collection[ISBN] = book_to_borrow.borrow_book(user_to_borrow)
+            if not book_collection[ISBN].reserve_list:
+                user_collection[userID] = user_collection[userID].add_to_borrow_history(book_collection[ISBN])
             save_books_file()
+            save_users_file()
         elif choice == 3: # Return a book
-            book_returned_ISBN = input("Enter the ISBN of the returned book: ")
+            book_returned_ISBN = input("Enter the ISBN of the book to return: ")
             try:
                 book_to_return = book_collection[book_returned_ISBN]
             except KeyError:
                 print("No book found with that ISBN!")
                 continue
 
-            book_collection[book_returned_ISBN], new_borrower = book_to_return.return_book()
-            if new_borrower:
-                pass
+            book_collection[book_returned_ISBN], next_reserved_user = book_to_return.return_book()
+            if next_reserved_user:
+                book_collection[book_returned_ISBN] = book_collection[book_returned_ISBN].borrow_book(next_reserved_user)
             save_books_file()
+            save_users_file()
         elif choice == 4: # Search for a book
             pass
         elif choice == 5: # Display all books
