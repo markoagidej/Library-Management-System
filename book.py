@@ -1,13 +1,13 @@
 
 class Book:
-    def __init__(self, title, author, ISBN, genre, publication_date):
+    def __init__(self, title, author, ISBN, genre, publication_date, available = True, reserve_list = []):
         self.__title = title
         self.__author = author
         self.__ISBN = ISBN
         self.__genre = genre
         self.__publication_date = publication_date
-        self.available = True
-        self.reserve_list = []
+        self.available = available
+        self.reserve_list = reserve_list
 
     def get_title(self):
         return self.__title
@@ -41,7 +41,10 @@ class Book:
         self.available = True
         return self, next_reserved_user
 
-def book_collection_add(collection, title, author, ISBN, genre, publication_date):
-    new_book = Book(title, author, ISBN, genre, publication_date)
-    collection[ISBN] = new_book
+def book_collection_add(title, author, ISBN, genre, publication_date, available = True, res_list = [], collection = {}):
+    new_book = Book(title, author, ISBN, genre, publication_date, available, res_list)
+    if collection:
+        collection[ISBN] = new_book
+    else:
+        collection = {ISBN: new_book}
     return collection

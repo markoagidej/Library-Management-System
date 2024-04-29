@@ -12,14 +12,14 @@ genre_collection = set() # (Genre)
 text_deliniator = "|"
 
 def load_file(filename):
-    if os.path.exists(f"\\Files\\{filename}"):
+    if os.path.exists(f"Files\\{filename}"):
         try:
-            with open(f"\\Files\\{filename}", "r") as file:
+            with open(f"Files\\{filename}", "r") as file:
                 if filename == "books.txt":
                     book_dict = {}
                     for line in file:
-                        title, author, ISBN, genre, publication_date = line.split(text_deliniator)
-                        book.book_collection_add(book_dict, title, author, ISBN, genre, publication_date)
+                        title, author, ISBN, genre, publication_date, available, res_list = line.split(text_deliniator)
+                        book.book_collection_add(book_dict, title, author, ISBN, genre, publication_date, bool(available), res_list)
                         return book_dict
                 elif filename == "user.txt":
                     user_dict = {}
@@ -34,10 +34,10 @@ def load_file(filename):
             print(f"File error for \'{filename}\'")
     else:
         try:
-            with open(f"\\Files\\{filename}", "w") as file:
+            with open(f"Files\\{filename}", "w") as file:
                 pass
         except:
-            print(f"Path issue for \'\\Files\\{filename}\'")
+            print(f"Path issue for \'Files\\{filename}\'")
 
         if filename == "books.txt":
             return {}
@@ -49,16 +49,31 @@ def load_file(filename):
             return set()
 
 def save_books_file():
-    with open(f"\\Files\\books.txt", "w") as file:
-        for book in book_collection:
-            file.write(text_deliniator.join(book.get_title, book.get_author, book.get_ISBN, book.get_genre, book.get_publication_date))
+    global book_collection
+    with open(f"Files\\books.txt", 'w') as file:
+        for book in book_collection.values():
+            title = str(book.get_title)
+            author = str(book.get_author)
+            ISBN = str(book.get_ISBN)
+            genre = str(book.get_genre)
+            pub_date = str(book.get_publication_date)
+            available = str(book.available)
+            res_list = str(book.reserve_list)
+            info_list = [title, author, ISBN, genre, pub_date, available, res_list]
+            final_line = "|".join(info_list)
+            file.write(final_line)
             
 def save_users_file():
-    with open(f"\\Files\\users.txt", "w") as file:
+    global user_collection
+    with open(f"Files\\users.txt", "w") as file:
         for user in user_collection:
             file.write(text_deliniator.join(user.get_name, user.get_UUID, user.get_borrow_history))
 
 def main():
+    global book_collection
+    global user_collection
+    global author_collection
+    global genre_collection
     book_collection = load_file("books.txt")
     user_collection = load_file("users.txt")
     author_collection = load_file("authors.txt")
@@ -91,6 +106,8 @@ def main():
             exit()
 
 def menu_book_ops():
+    global book_collection
+    global user_collection
     while True:
         print("Book Operations:")
         print("1. Add a new book")
@@ -112,8 +129,9 @@ def menu_book_ops():
             ISBN = input("Enter the ISBN for the new book: ")
             genre = input("Enter the genre for the new book: ")
             publication_date = input("Enter the publication date for the new book: ")
-            book_collection = book.book_collection_add(book_collection, title, author, ISBN, genre, publication_date)
+            book_collection = book.book_collection_add(title, author, ISBN, genre, publication_date, book_collection)
             save_books_file()
+            break
         elif choice == 2: # Borrow/Reserve a book
             userID = input("Enter the user ID who would like to borrow a book: ")
             try:
@@ -134,6 +152,7 @@ def menu_book_ops():
                 user_collection[userID] = user_collection[userID].add_to_borrow_history(book_collection[ISBN])
             save_books_file()
             save_users_file()
+            break
         elif choice == 3: # Return a book
             book_returned_ISBN = input("Enter the ISBN of the book to return: ")
             try:
@@ -147,10 +166,13 @@ def menu_book_ops():
                 book_collection[book_returned_ISBN] = book_collection[book_returned_ISBN].borrow_book(next_reserved_user)
             save_books_file()
             save_users_file()
+            break
         elif choice == 4: # Search for a book
             pass
+            break
         elif choice == 5: # Display all books
             pass
+            break
 
 def menu_user_ops():
     while True:
@@ -165,12 +187,12 @@ def menu_user_ops():
             print("Only enter a number 1-3")
             continue
 
-        if choice == 1:
-            user_add()
-        elif choice == 2:
-            user_view_details()
-        elif choice == 3:
-            user_display_all()
+        if choice == 1: # Add a new user
+            pass
+        elif choice == 2: # View user details
+            pass
+        elif choice == 3: # Display all users
+            pass
 
 def menu_author_ops():
     while True:
@@ -185,12 +207,12 @@ def menu_author_ops():
             print("Only enter a number 1-3")
             continue
 
-        if choice == 1:
-            author_add()
-        elif choice == 2:
-            author_view_details()
-        elif choice == 3:
-            author_display_all()
+        if choice == 1: # Add a new author
+            pass
+        elif choice == 2: # View author details
+            pass
+        elif choice == 3: # Display all authors
+            pass
 
 def menu_genre_ops():
     while True:
@@ -205,12 +227,12 @@ def menu_genre_ops():
             print("Only enter a number 1-3")
             continue
 
-        if choice == 1:
-            genre_add()
-        elif choice == 2:
-            genre_view_details()
-        elif choice == 3:
-            genre_display_all()
+        if choice == 1: # Add a new genre
+            pass
+        elif choice == 2: # View genre details
+            pass
+        elif choice == 3: # Display all genres
+            pass
 
 
 if __name__ == "__main__":
