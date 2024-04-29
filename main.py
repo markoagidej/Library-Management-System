@@ -9,6 +9,7 @@ book_collection = {} # {ISBN : Book}
 user_collection = {} # {UUID : User}
 author_collection = [] # [Author]
 genre_collection = set() # (Genre)
+text_deliniator = "|"
 
 def load_file(filename):
     if os.path.exists(f"\\Files\\{filename}"):
@@ -17,11 +18,7 @@ def load_file(filename):
                 if filename == "books.txt":
                     book_dict = {}
                     for line in file:
-                        title = 
-                        author = 
-                        ISBN = 
-                        genre = 
-                        publication_date = 
+                        title, author, ISBN, genre, publication_date = line.split(text_deliniator)
                         book.book_collection_add(book_dict, title, author, ISBN, genre, publication_date)
                         return book_dict
                 elif filename == "user.txt":
@@ -85,8 +82,9 @@ def main():
 
 def menu_book_ops():
     def save_books_file():
-        pass
-
+        with open(f"\\Files\\books.txt", "w") as file:
+            for book in book_collection:
+                file.write(text_deliniator.join(book.get_title, book.get_author, book.get_ISBN, book.get_genre, book.get_publication_date))
     while True:
         print("Book Operations:")
         print("1. Add a new book")
