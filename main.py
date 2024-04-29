@@ -1,5 +1,6 @@
 
 import os
+import re
 import book
 import user
 import author
@@ -13,25 +14,30 @@ text_deliniator = "|"
 
 def load_file(filename):
     if os.path.exists(f"Files\\{filename}"):
-        try:
-            with open(f"Files\\{filename}", "r") as file:
-                if filename == "books.txt":
-                    book_dict = {}
-                    for line in file:
-                        title, author, ISBN, genre, publication_date, available, res_list = line.split(text_deliniator)
-                        book.book_collection_add(book_dict, title, author, ISBN, genre, publication_date, bool(available), res_list)
-                        return book_dict
-                elif filename == "user.txt":
-                    user_dict = {}
-                    return user_dict
-                elif filename == "authors.txt":
-                    authors_dict = []
-                    return authors_dict
-                elif filename == "genres.txt":
-                    user_dict = {}
-                    return user_dict
-        except:
-            print(f"File error for \'{filename}\'")
+        # try:
+        with open(f"Files\\{filename}", "r") as file:
+            if filename == "books.txt":
+                book_dict = {}
+                for line in file:
+                    title, author, ISBN, genre, publication_date, available, res_list = line.split(text_deliniator)
+                    match = re.search("\\[(.*)\\]", res_list)
+                    if match.group(1):
+                        res_list_parsed = match.group(1).split(",")
+                    else:
+                        res_list_parsed = []
+                    book_dict = book.book_collection_add(title, author, ISBN, genre, publication_date, book_dict, bool(available), res_list_parsed)
+                return book_dict
+            elif filename == "user.txt":
+                user_dict = {}
+                return user_dict
+            elif filename == "authors.txt":
+                authors_dict = []
+                return authors_dict
+            elif filename == "genres.txt":
+                user_dict = {}
+                return user_dict
+        # except:
+        #     print(f"File error for \'{filename}\'")
     else:
         try:
             with open(f"Files\\{filename}", "w") as file:
@@ -52,13 +58,20 @@ def save_books_file():
     global book_collection
     with open(f"Files\\books.txt", 'w') as file:
         for book in book_collection.values():
-            title = str(book.get_title)
-            author = str(book.get_author)
-            ISBN = str(book.get_ISBN)
-            genre = str(book.get_genre)
-            pub_date = str(book.get_publication_date)
+            # title = str(book.get_title)
+            # author = str(book.get_author)
+            # ISBN = str(book.get_ISBN)
+            # genre = str(book.get_genre)
+            # pub_date = str(book.get_publication_date)
+            # available = str(book.available)
+            # res_list = str(book.reserve_list)
+            title = book.title
+            author = book.author
+            ISBN = book.ISBN
+            genre = book.genre
+            pub_date = book.publication_date
             available = str(book.available)
-            res_list = str(book.reserve_list)
+            res_list = "[" + ",".join(book.reserve_list) + "]"
             info_list = [title, author, ISBN, genre, pub_date, available, res_list]
             final_line = "|".join(info_list)
             file.write(final_line)
@@ -171,7 +184,8 @@ def menu_book_ops():
             pass
             break
         elif choice == 5: # Display all books
-            pass
+            for book in book_collection.values():
+                print(f"{book.title}, {book.author}, {book.ISBN}, {book.genre}, {book.publication_date}, {book.available}, {book.reserve_list}")
             break
 
 def menu_user_ops():
@@ -232,7 +246,9 @@ def menu_genre_ops():
         elif choice == 2: # View genre details
             pass
         elif choice == 3: # Display all genres
-            pass
+            for genre in genre_collection:
+                pass
+
 
 
 if __name__ == "__main__":
