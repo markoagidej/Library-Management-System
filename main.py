@@ -40,7 +40,7 @@ def load_file(filename):
                             borrow_list_parsed = match.group(1).split(",")
                         else:
                             borrow_list_parsed = []
-                        user_dict = user_mod.user_collection_add(name, UUID, borrow_list_parsed)
+                        user_dict = user_mod.user_collection_add(name, UUID, user_dict, borrow_list_parsed)
                     return user_dict
                 elif filename == "authors.txt":
                     authors_list = []
@@ -215,13 +215,14 @@ def menu_book_ops():
             for book in book_collection.values():
                 if search_lower in book.get_title().lower():
                     book_counter += 1
-                    print(f"{book.get_title()}, {book.get_author()}, {book.get_ISBN()}, {book.get_genre()}, {book.get_publication_date()}, {book.get_available()}, {book.get_reserve_list()}")
+                    print(f"{book.get_title()}, {book.get_author()}, {book.get_ISBN()}, {book.get_genre()}, {book.get_publication_date()}, {book.get_available()}, Reservation List:{book.get_reserve_list()}")
             if book_counter == 0:
-                print(f"No books found with {search} in the title!")                    
+                print(f"No books found with \'{search}\' in the title!")                    
             break
         elif choice == 5: # Display all books
+            print("Displaying all books in library:")
             for book in book_collection.values():
-                print(f"{book.get_title()}, {book.get_author()}, {book.get_ISBN()}, {book.get_genre()}, {book.get_publication_date()}, {book.get_available()}, {book.get_reserve_list()}")
+                print(f"{book.get_title()}, {book.get_author()}, {book.get_ISBN()}, {book.get_genre()}, {book.get_publication_date()}, {book.get_available()}, Reservation List:{book.get_reserve_list()}")
             break
 
 def menu_user_ops():
@@ -239,7 +240,7 @@ def menu_user_ops():
             continue
 
         if choice == 1: # Add a new user
-            print("Adding a new user")
+            print("Adding a new user!")
             user_name = input("Enter the name of the new user: ")
             user_UUID = input(f"Declare a UUID for {user_name}: ")
             if user_collection:
@@ -257,16 +258,17 @@ def menu_user_ops():
                 print(f"Could not find a user with the UUID of {user_ID}")
                 break
             print(f"Details for user {user_ID}:")
-            print(f"Name: {user_details.name}")
-            print(f"- Borrow History: {user_details.borrow_history}")
+            print(f"Name: {user_details.get_name()}")
+            print(f"- Borrow History: {user_details.get_borrow_history()}")
             break
         elif choice == 3: # Display all users
             print("Displaying all users:")
             for user in user_collection.values():
-                print(f"{user.UUID}: {user.name}")
+                print(f"{user.get_UUID()}: {user.get_name()}")
             break
 
 def menu_author_ops():
+    global author_collection
     while True:
         print("Author Operations:")
         print("1. Add a new author")
@@ -287,7 +289,7 @@ def menu_author_ops():
             save_authors_file()
             break
         elif choice == 2: # View author details
-            author_name = input("Enter the anme of the author you would like to see the details of: ")
+            author_name = input("Enter the name of the author you would like to see the details of: ")
             try:
                 author_to_detail = author_collection[author_name]
                 print(f"{author_to_detail.get_name()}'s biography: ")
@@ -296,6 +298,7 @@ def menu_author_ops():
                 print(f"No author with the name {author_name} found!")
                 break
         elif choice == 3: # Display all authors
+            print("Displaying all authors!")
             for author in author_collection:
                 print(f"{author.get_name()}'s biography: ")
                 print(f"{author.get_biography()}")
@@ -303,6 +306,7 @@ def menu_author_ops():
 
 
 def menu_genre_ops():
+    global genre_collection
     while True:
         print("Genre Operations:")
         print("1. Add a new genre")
@@ -335,6 +339,7 @@ def menu_genre_ops():
                 print(f"No genre called {genre_input} found!")
                 break
         elif choice == 3: # Display all genres
+            print("Displaying all genres!")
             for genre in genre_collection:
                 print(f"Genre: {genre.get_name()}")
                 print(f"- Description: {genre.get_description()}")

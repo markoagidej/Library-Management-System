@@ -3,7 +3,7 @@ class User:
     def __init__(self, name, UUID, borrow_history = []):
         self.__name = name
         self.__UUID = UUID
-        self.__borrow_history = []
+        self.__borrow_history = borrow_history
 
     def get_name(self):
         return self.__name
@@ -18,8 +18,8 @@ class User:
         self.__borrow_history.append(book.get_title)
         return self
     
-def user_collection_add(name, UUID, collection):
-    new_user = User(name, UUID)
+def user_collection_add(name, UUID, collection, borrow_history):
+    new_user = User(name, UUID, borrow_history)
     if collection:
         collection[UUID] = new_user
     else:
