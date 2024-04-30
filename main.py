@@ -1,10 +1,10 @@
 
 import os
 import re
-import book
-import user
-import author
-import genre
+import book as book_mod
+import user as user_mod
+import author as author_mod
+import genre as genre_mod
 
 book_collection = {} # {ISBN : Book}
 user_collection = {} # {UUID : User}
@@ -25,10 +25,18 @@ def load_file(filename):
                         res_list_parsed = match.group(1).split(",")
                     else:
                         res_list_parsed = []
-                    book_dict = book.book_collection_add(title, author, ISBN, genre, publication_date, book_dict, bool(available), res_list_parsed)
+                    book_dict = book_mod.book_collection_add(title, author, ISBN, genre, publication_date, book_dict, bool(available), res_list_parsed)
                 return book_dict
-            elif filename == "user.txt":
+            elif filename == "users.txt":
                 user_dict = {}
+                for line in file:
+                    name, UUID, borrow_list = line.split(text_deliniator)
+                    match = re.search("\\[(.*)\\]", borrow_list)                    
+                    if match.group(1):
+                        borrow_list_parsed = match.group(1).split(",")
+                    else:
+                        borrow_list_parsed = []
+                    user_dict = user_mod.user_collection_add(name, UUID, borrow_list_parsed)
                 return user_dict
             elif filename == "authors.txt":
                 authors_dict = []
@@ -65,6 +73,15 @@ def save_books_file():
             # pub_date = str(book.get_publication_date)
             # available = str(book.available)
             # res_list = str(book.reserve_list)
+
+            # title = book.get_title
+            # author = book.get_author
+            # ISBN = book.get_ISBN
+            # genre = book.get_genre
+            # pub_date = book.get_publication_date
+            # available = book.available
+            # res_list = book.reserve_list
+
             title = book.title
             author = book.author
             ISBN = book.ISBN
@@ -79,8 +96,10 @@ def save_books_file():
 def save_users_file():
     global user_collection
     with open(f"Files\\users.txt", "w") as file:
-        for user in user_collection:
-            file.write(text_deliniator.join(user.get_name, user.get_UUID, user.get_borrow_history))
+        for user in user_collection.values():
+            # file.write(text_deliniator.join(user.get_name, user.get_UUID, user.get_borrow_history))
+            borrow_list = "[" + ",".join(user.borrow_history) + "]"
+            file.write(text_deliniator.join([user.name, user.UUID, borrow_list]))
 
 def main():
     global book_collection
@@ -142,7 +161,7 @@ def menu_book_ops():
             ISBN = input("Enter the ISBN for the new book: ")
             genre = input("Enter the genre for the new book: ")
             publication_date = input("Enter the publication date for the new book: ")
-            book_collection = book.book_collection_add(title, author, ISBN, genre, publication_date, book_collection)
+            book_collection = book_mod.book_collection_add(title, author, ISBN, genre, publication_date, book_collection)
             save_books_file()
             break
         elif choice == 2: # Borrow/Reserve a book
@@ -198,6 +217,7 @@ def menu_book_ops():
             break
 
 def menu_user_ops():
+    global user_collection
     while True:
         print("User Operations:")
         print("1. Add a new user")
@@ -211,11 +231,32 @@ def menu_user_ops():
             continue
 
         if choice == 1: # Add a new user
-            pass
+            print("Adding a new user")
+            user_name = input("Enter the name of the new user: ")
+            user_UUID = input(f"Declare a UUID for {user_name}: ")
+            if user_collection:
+                if user_UUID in user_collection:
+                    print("There is already a user with that UUID! Please try again.")
+                    break
+            user_collection = user_mod.user_collection_add(user_name, user_UUID, user_collection)
+            save_users_file()
+            break
         elif choice == 2: # View user details
-            pass
+            user_ID = input("Enter the UUID of the user you wish to see details about: ")
+            try:
+                user_details = user_collection[user_ID]
+            except:
+                print(f"Could not find a user with the UUID of {user_ID}")
+                break
+            print(f"Details for user {user_ID}:")
+            print(f"Name: {user_details.name}")
+            print(f"- Borrow History: {user_details.borrow_history}")
+            break
         elif choice == 3: # Display all users
-            pass
+            print("Displaying all users:")
+            for user in user_collection.values():
+                print(f"{user.UUID}: {user.name}")
+            break
 
 def menu_author_ops():
     while True:
@@ -257,7 +298,6 @@ def menu_genre_ops():
         elif choice == 3: # Display all genres
             for genre in genre_collection:
                 pass
-
 
 
 if __name__ == "__main__":
