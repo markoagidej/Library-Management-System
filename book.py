@@ -9,6 +9,14 @@ class Book:
         self.available = available
         self.reserve_list = reserve_list
 
+        # self.__title = title
+        # self.__author = author
+        # self.__ISBN = ISBN
+        # self.__genre = genre
+        # self.__publication_date = publication_date
+        # self.__available = available
+        # self.__reserve_list = reserve_list
+
     # def get_title(self):
     #     return self.__title
 

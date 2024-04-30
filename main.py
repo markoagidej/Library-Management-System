@@ -181,7 +181,16 @@ def menu_book_ops():
             save_users_file()
             break
         elif choice == 4: # Search for a book
-            pass
+            search = input("Enter part of the title of the book you would like to search: ")
+            search_lower = search.lower()
+            print(f"Here are all the books with {search} in the title:")
+            book_counter = 0
+            for book in book_collection.values():
+                if search_lower in book.title.lower():
+                    book_counter += 1
+                    print(f"{book.title}, {book.author}, {book.ISBN}, {book.genre}, {book.publication_date}, {book.available}, {book.reserve_list}")
+            if book_counter == 0:
+                print(f"No books found with {search} in the title!")                    
             break
         elif choice == 5: # Display all books
             for book in book_collection.values():
