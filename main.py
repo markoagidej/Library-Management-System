@@ -9,43 +9,57 @@ import genre as genre_mod
 book_collection = {} # {ISBN : Book}
 user_collection = {} # {UUID : User}
 author_collection = [] # [Author]
-genre_collection = set() # (Genre)
+genre_collection = [] # [Genre]
 text_deliniator = "|"
 
 def load_file(filename):
     if os.path.exists(f"Files\\{filename}"):
-        # try:
-        with open(f"Files\\{filename}", "r") as file:
-            if filename == "books.txt":
-                book_dict = {}
-                for line in file:
-                    title, author, ISBN, genre, publication_date, available, res_list = line.split(text_deliniator)
-                    match = re.search("\\[(.*)\\]", res_list)
-                    if match.group(1):
-                        res_list_parsed = match.group(1).split(",")
-                    else:
-                        res_list_parsed = []
-                    book_dict = book_mod.book_collection_add(title, author, ISBN, genre, publication_date, book_dict, bool(available), res_list_parsed)
-                return book_dict
-            elif filename == "users.txt":
-                user_dict = {}
-                for line in file:
-                    name, UUID, borrow_list = line.split(text_deliniator)
-                    match = re.search("\\[(.*)\\]", borrow_list)                    
-                    if match.group(1):
-                        borrow_list_parsed = match.group(1).split(",")
-                    else:
-                        borrow_list_parsed = []
-                    user_dict = user_mod.user_collection_add(name, UUID, borrow_list_parsed)
-                return user_dict
-            elif filename == "authors.txt":
-                authors_dict = []
-                return authors_dict
-            elif filename == "genres.txt":
-                user_dict = {}
-                return user_dict
-        # except:
-        #     print(f"File error for \'{filename}\'")
+        try:
+            with open(f"Files\\{filename}", "r") as file:
+                if filename == "books.txt":
+                    book_dict = {}
+                    for line in file:
+                        if not line:
+                            break
+                        title, author, ISBN, genre, publication_date, available, res_list = line.split(text_deliniator)
+                        match = re.search("\\[(.*)\\]", res_list)
+                        if match.group(1):
+                            res_list_parsed = match.group(1).split(",")
+                        else:
+                            res_list_parsed = []
+                        book_dict = book_mod.book_collection_add(title, author, ISBN, genre, publication_date, book_dict, bool(available), res_list_parsed)
+                    return book_dict
+                elif filename == "users.txt":
+                    user_dict = {}
+                    for line in file:
+                        if not line:
+                            break
+                        name, UUID, borrow_list = line.split(text_deliniator)
+                        match = re.search("\\[(.*)\\]", borrow_list)                    
+                        if match.group(1):
+                            borrow_list_parsed = match.group(1).split(",")
+                        else:
+                            borrow_list_parsed = []
+                        user_dict = user_mod.user_collection_add(name, UUID, borrow_list_parsed)
+                    return user_dict
+                elif filename == "authors.txt":
+                    authors_list = []
+                    for line in file:
+                        if not line:
+                            break
+                        name, bio = line.split(text_deliniator)
+                        authors_list = author_mod.author_collection_add(name, bio)
+                    return authors_list
+                elif filename == "genres.txt":
+                    genre_list = []
+                    for line in file:
+                        if not line:
+                            break
+                        name, description, category = line.split(text_deliniator)
+                        genre_list = genre_mod.genre_collection_add(name, description, category)
+                    return genre_list
+        except:
+            print(f"File error for \'{filename}\'")
     else:
         try:
             with open(f"Files\\{filename}", "w") as file:
@@ -60,46 +74,40 @@ def load_file(filename):
         elif filename == "authors.txt":
             return []
         elif filename == "genres.txt":
-            return set()
+            return []
 
 def save_books_file():
     global book_collection
     with open(f"Files\\books.txt", 'w') as file:
         for book in book_collection.values():
-            # title = str(book.get_title)
-            # author = str(book.get_author)
-            # ISBN = str(book.get_ISBN)
-            # genre = str(book.get_genre)
-            # pub_date = str(book.get_publication_date)
-            # available = str(book.available)
-            # res_list = str(book.reserve_list)
-
-            # title = book.get_title
-            # author = book.get_author
-            # ISBN = book.get_ISBN
-            # genre = book.get_genre
-            # pub_date = book.get_publication_date
-            # available = book.available
-            # res_list = book.reserve_list
-
-            title = book.title
-            author = book.author
-            ISBN = book.ISBN
-            genre = book.genre
-            pub_date = book.publication_date
-            available = str(book.available)
-            res_list = "[" + ",".join(book.reserve_list) + "]"
-            info_list = [title, author, ISBN, genre, pub_date, available, res_list]
-            final_line = "|".join(info_list)
-            file.write(final_line)
+            title = book.get_title()
+            author = book.get_author()
+            ISBN = book.get_ISBN()
+            genre = book.get_genre()
+            pub_date = book.get_publication_date()
+            available = str(book.get_available())
+            res_list = "[" + ",".join(book.get_reserve_list()) + "]"
+            final_line = "|".join([title, author, ISBN, genre, pub_date, available, res_list])
+            file.write(final_line + "\n")
             
 def save_users_file():
     global user_collection
     with open(f"Files\\users.txt", "w") as file:
         for user in user_collection.values():
-            # file.write(text_deliniator.join(user.get_name, user.get_UUID, user.get_borrow_history))
-            borrow_list = "[" + ",".join(user.borrow_history) + "]"
-            file.write(text_deliniator.join([user.name, user.UUID, borrow_list]))
+            borrow_list = "[" + ",".join(user.get_borrow_history()) + "]"
+            file.write(text_deliniator.join([user.get_name(), user.get_UUID(), borrow_list]) + "\n")
+            
+def save_authors_file():
+    global author_collection
+    with open(f"Files\\authors.txt", "w") as file:
+        for author in author_collection:
+            file.write(text_deliniator.join([author.get_name(), author.get_biography()]) + "\n")
+            
+def save_genres_file():
+    global genre_collection
+    with open(f"Files\\users.txt", "w") as file:
+        for genre in genre_collection:
+            file.write(text_deliniator.join([genre.get_name(), genre.get_description(), genre.get_category()]) + "\n")
 
 def main():
     global book_collection
@@ -205,15 +213,15 @@ def menu_book_ops():
             print(f"Here are all the books with {search} in the title:")
             book_counter = 0
             for book in book_collection.values():
-                if search_lower in book.title.lower():
+                if search_lower in book.get_title().lower():
                     book_counter += 1
-                    print(f"{book.title}, {book.author}, {book.ISBN}, {book.genre}, {book.publication_date}, {book.available}, {book.reserve_list}")
+                    print(f"{book.get_title()}, {book.get_author()}, {book.get_ISBN()}, {book.get_genre()}, {book.get_publication_date()}, {book.get_available()}, {book.get_reserve_list()}")
             if book_counter == 0:
                 print(f"No books found with {search} in the title!")                    
             break
         elif choice == 5: # Display all books
             for book in book_collection.values():
-                print(f"{book.title}, {book.author}, {book.ISBN}, {book.genre}, {book.publication_date}, {book.available}, {book.reserve_list}")
+                print(f"{book.get_title()}, {book.get_author()}, {book.get_ISBN()}, {book.get_genre()}, {book.get_publication_date()}, {book.get_available()}, {book.get_reserve_list()}")
             break
 
 def menu_user_ops():
@@ -272,11 +280,27 @@ def menu_author_ops():
             continue
 
         if choice == 1: # Add a new author
-            pass
+            print("Adding a new author!")
+            author_name = input("Enter the name of the new author: ")
+            author_biography = input(f"Enter the biography of \'{author_name}\': ")
+            author_collection = author_mod.author_collection_add(author_name, author_biography, author_collection)
+            save_authors_file()
+            break
         elif choice == 2: # View author details
-            pass
+            author_name = input("Enter the anme of the author you would like to see the details of: ")
+            try:
+                author_to_detail = author_collection[author_name]
+                print(f"{author_to_detail.get_name()}'s biography: ")
+                print(f"{author_to_detail.get_biography()}")
+            except:
+                print(f"No author with the name {author_name} found!")
+                break
         elif choice == 3: # Display all authors
-            pass
+            for author in author_collection:
+                print(f"{author.get_name()}'s biography: ")
+                print(f"{author.get_biography()}")
+            break
+
 
 def menu_genre_ops():
     while True:
@@ -292,12 +316,30 @@ def menu_genre_ops():
             continue
 
         if choice == 1: # Add a new genre
-            pass
+            print("Adding a new genre!")
+            genre_name = input("Enter the name of the new genre: ")
+            genre_description = input(f"Enter the description of \'{genre_name}\': ")
+            genre_category = input(f"Enter the category of \'{genre_name}\': ")
+            genre_collection = genre_mod.genre_collection_add(genre_name, genre_description, genre_category, genre_collection)
+            save_genres_file()
+            break
         elif choice == 2: # View genre details
-            pass
+            genre_input = input("Enter the name of the Genre you would like to see details of: ")
+            try:
+                genre_to_detail = genre_collection[genre_input]
+                print(f"Genre: {genre_to_detail.get_name()}")
+                print(f"- Description: {genre_to_detail.get_description()}")
+                print(f"- Category: {genre_to_detail.get_category()}")
+                break
+            except:
+                print(f"No genre called {genre_input} found!")
+                break
         elif choice == 3: # Display all genres
             for genre in genre_collection:
-                pass
+                print(f"Genre: {genre.get_name()}")
+                print(f"- Description: {genre.get_description()}")
+                print(f"- Category: {genre.get_category()}")
+            break
 
 
 if __name__ == "__main__":

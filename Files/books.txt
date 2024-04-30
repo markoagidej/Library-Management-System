@@ -1,1 +1,2 @@
 Dune|Frank Herbert|1234|SciFi|1965|True|[]
+The Hitchhiker's Guide to the Galaxy|Douglas Adams|42|Comedy|1979|True|[]

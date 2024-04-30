@@ -1,36 +1,42 @@
 
 class Book:
     def __init__(self, title, author, ISBN, genre, publication_date, available = True, reserve_list = []):
-        self.title = title
-        self.author = author
-        self.ISBN = ISBN
-        self.genre = genre
-        self.publication_date = publication_date
-        self.available = available
-        self.reserve_list = reserve_list
+        # self.title = title
+        # self.author = author
+        # self.ISBN = ISBN
+        # self.genre = genre
+        # self.publication_date = publication_date
+        # self.available = available
+        # self.reserve_list = reserve_list
 
-        # self.__title = title
-        # self.__author = author
-        # self.__ISBN = ISBN
-        # self.__genre = genre
-        # self.__publication_date = publication_date
-        # self.__available = available
-        # self.__reserve_list = reserve_list
+        self.__title = title
+        self.__author = author
+        self.__ISBN = ISBN
+        self.__genre = genre
+        self.__publication_date = publication_date
+        self.__available = available
+        self.__reserve_list = reserve_list
 
-    # def get_title(self):
-    #     return self.__title
+    def get_title(self):
+        return self.__title
 
-    # def get_author(self):
-    #     return self.__author
+    def get_author(self):
+        return self.__author
 
-    # def get_ISBN(self):
-    #     return self.__ISBN
+    def get_ISBN(self):
+        return self.__ISBN
 
-    # def get_genre(self):
-    #     return self.__genre
+    def get_genre(self):
+        return self.__genre
 
-    # def get_publication_date(self):
-    #     return self.__publication_date
+    def get_publication_date(self):
+        return self.__publication_date
+
+    def get_available(self):
+        return self.__available
+
+    def get_reserve_list(self):
+        return self.__reserve_list
     
     def borrow_book(self, user_ID):
         if self.available:
