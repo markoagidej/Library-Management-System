@@ -1,2 +1,0 @@
-Joe Shmo|123|[]
-Jane Doe|1337|[]

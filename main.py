@@ -57,7 +57,7 @@ def load_file(filename):
                         if not line:
                             break
                         name, description, category = line.split(text_deliniator)
-                        genre_list = genre_mod.genre_collection_add(name, description, category)
+                        genre_list = genre_mod.genre_collection_add(name, description, category, genre_list)
                     return genre_list
         except:
             print(f"File error for \'{filename}\'")
@@ -106,7 +106,7 @@ def save_authors_file():
             
 def save_genres_file():
     global genre_collection
-    with open(f"Files\\users.txt", "w") as file:
+    with open(f"Files\\genres.txt", "w") as file:
         for genre in genre_collection:
             file.write(text_deliniator.join([genre.get_name(), genre.get_description(), genre.get_category()]) + "\n")
 
@@ -167,6 +167,16 @@ def menu_book_ops():
             print("Adding a new book to the library!")
             title = input("Enter the title for the new book: ")
             author = input("Enter the author for the new book: ")
+            author_lower = author.lower()
+            existing_author_list = []
+            for existing_author in author_collection: # checks to see if author already exists in list, if not ask for bio and add to author list
+                existing_author_list.append(existing_author.get_name().lower())
+                if author_lower not in existing_author_list:
+                    print("Adding new author to list!")
+                    author_biography = input(f"Enter the biography of \'{author}\': ")
+                    author_collection = author_mod.author_collection_add(author, author_biography, author_collection)
+                    print(f"{author} added to Author collection!")
+                    save_authors_file()
             ISBN = input("Enter the ISBN for the new book: ")
             genre = input("Enter the genre for the new book: ")
             publication_date = input("Enter the publication date for the new book: ")
@@ -330,23 +340,31 @@ def menu_genre_ops():
         if choice == 1: # Add a new genre
             print("Adding a new genre!")
             genre_name = input("Enter the name of the new genre: ")
+            genre_list = [existing_genre.get_name().lower for existing_genre in genre_collection]
+            if genre_name.lower() in genre_list:
+                print(f"Genre {genre_name} already exists!")
+                continue
             genre_description = input(f"Enter the description of \'{genre_name}\': ")
             genre_category = input(f"Enter the category of \'{genre_name}\': ")
             genre_collection = genre_mod.genre_collection_add(genre_name, genre_description, genre_category, genre_collection)
-            print(f"{new_genre} added to Genre collection!")
+            print(f"{genre_name} added to Genre collection!")
             save_genres_file()
             break
         elif choice == 2: # View genre details
             genre_input = input("Enter the name of the Genre you would like to see details of: ")
-            try:
-                genre_to_detail = genre_collection[genre_input]
-                print(f"Genre: {genre_to_detail.get_name()}")
-                print(f"- Description: {genre_to_detail.get_description()}")
-                print(f"- Category: {genre_to_detail.get_category()}")
-                break
-            except:
+            genre_lower = genre_input.lower()
+            genre_search = False
+
+            # prints details for any genre that has a matching string within
+            for genre in genre_collection:
+                if genre_lower in genre.get_name().lower():
+                    genre_search = True
+                    print(f"Genre: {genre.get_name()}")
+                    print(f"- Description: {genre.get_description()}")
+                    print(f"- Category: {genre.get_category()}")
+            if not genre_search:
                 print(f"No genre called {genre_input} found!")
-                break
+            break
         elif choice == 3: # Display all genres
             print("Displaying all genres!")
             for genre in genre_collection:

@@ -1,3 +1,2 @@
 Joe Shmo|123|[]
 Jane Doe|1337|[]
-Indie Cindy|147|[]
