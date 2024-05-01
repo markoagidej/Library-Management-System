@@ -1,4 +1,4 @@
-Dune|Frank Herbert|1234|SciFi|1965|True|[]
+Dune|Frank Herbert|1234|Science Fiction|1965|True|[]
 The Hitchhiker's Guide to the Galaxy|Douglas Adams|42|Comedy|1979|True|[]
 The Hobbit|J.R.R. Tolkein|7|Fantasy|1937|True|[]
 Harry Potter and the Sorcerer's Stone|J.K. Rowling|11|Fantasy|1997|True|[]
