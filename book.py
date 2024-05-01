@@ -46,16 +46,20 @@ class Book:
             choice = input("Would you like to be put on the reserve list for this book? (y/n): ")
             if choice == "y":
                 self.__reserve_list.append(user_ID)
-                print(f"{user_ID} added to the reservation list for {self.__name}")
+                print(f"{user_ID} added to the reservation list for {self.__title}")
         return self
 
     def return_book(self):
-        if self.reserve_list:
-            next_reserved_user = self.reserve_list.pop(0)
+        if self.__available:
+            print("This book is not currently borrowed!")
+            return self, ""
         else:
-            next_reserved_user = ""
-        self.available = True
-        return self, next_reserved_user
+            if self.__reserve_list:
+                next_reserved_user_ID = self.__reserve_list.pop(0)
+            else:
+                next_reserved_user_ID = ""
+        self.__available = True
+        return self, next_reserved_user_ID
 
 def book_collection_add(title, author, ISBN, genre, publication_date, collection = {}, available = True, res_list = []):
     new_book = Book(title, author, ISBN, genre, publication_date, available, res_list)

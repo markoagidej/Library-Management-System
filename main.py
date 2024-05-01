@@ -214,10 +214,14 @@ def menu_book_ops():
                 print("No book found with that ISBN!")
                 continue
 
-            book_collection[book_returned_ISBN], next_reserved_user = book_to_return.return_book()
-            if next_reserved_user:
-                user_mod.notify_user(next_reserved_user)
-                book_collection[book_returned_ISBN] = book_collection[book_returned_ISBN].borrow_book(next_reserved_user)
+            book_collection[book_returned_ISBN], next_reserved_user_ID = book_to_return.return_book()
+            print(f"{book_to_return.get_title()} returned!")
+            if next_reserved_user_ID:
+                next_user = user_collection[next_reserved_user_ID]
+                user_mod.notify_user(next_user)
+                book_collection[book_returned_ISBN] = book_collection[book_returned_ISBN].borrow_book(next_user.get_UUID())
+                user_collection[next_reserved_user_ID] = next_user.add_to_borrow_history(book_collection[book_returned_ISBN])
+                print(f"\'{book_to_return.get_title()}\' automatically lent out to user: {next_reserved_user_ID}.")
             save_books_file()
             save_users_file()
             break
