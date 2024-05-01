@@ -18,10 +18,14 @@ class User:
         self.__borrow_history.append(book.get_title)
         return self
     
-def user_collection_add(name, UUID, collection, borrow_history):
+def user_collection_add(name, UUID, collection, borrow_history = []):
     new_user = User(name, UUID, borrow_history)
     if collection:
         collection[UUID] = new_user
     else:
         collection = {UUID: new_user}
     return collection
+
+def notify_user(user):
+    # potentially send email or something
+    pass

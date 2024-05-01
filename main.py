@@ -48,7 +48,8 @@ def load_file(filename):
                         if not line:
                             break
                         name, bio = line.split(text_deliniator)
-                        authors_list = author_mod.author_collection_add(name, bio)
+                        bio = bio.strip()
+                        authors_list = author_mod.author_collection_add(name, bio, authors_list)
                     return authors_list
                 elif filename == "genres.txt":
                     genre_list = []
@@ -60,7 +61,7 @@ def load_file(filename):
                     return genre_list
         except:
             print(f"File error for \'{filename}\'")
-    else:
+    else: # if no file exists, create one and a default empty data structure
         try:
             with open(f"Files\\{filename}", "w") as file:
                 pass
@@ -203,6 +204,7 @@ def menu_book_ops():
 
             book_collection[book_returned_ISBN], next_reserved_user = book_to_return.return_book()
             if next_reserved_user:
+                user_mod.notify_user(next_reserved_user)
                 book_collection[book_returned_ISBN] = book_collection[book_returned_ISBN].borrow_book(next_reserved_user)
             save_books_file()
             save_users_file()
@@ -286,24 +288,30 @@ def menu_author_ops():
             author_name = input("Enter the name of the new author: ")
             author_biography = input(f"Enter the biography of \'{author_name}\': ")
             author_collection = author_mod.author_collection_add(author_name, author_biography, author_collection)
+            print(f"{author_name} added to Author collection!")
             save_authors_file()
             break
         elif choice == 2: # View author details
             author_name = input("Enter the name of the author you would like to see the details of: ")
-            try:
-                author_to_detail = author_collection[author_name]
-                print(f"{author_to_detail.get_name()}'s biography: ")
-                print(f"{author_to_detail.get_biography()}")
-            except:
+            author_name_lower = author_name.lower()
+            author_search = False
+
+            # prints details for any author that has a matching string within
+            for author in author_collection:
+                if author_name_lower in author.get_name().lower():
+                    author_search = True
+                    print(f"{author.get_name()}'s biography:")
+                    print(f"{author.get_biography()}")
+            if not author_search:
                 print(f"No author with the name {author_name} found!")
-                break
+
+            break
         elif choice == 3: # Display all authors
             print("Displaying all authors!")
             for author in author_collection:
                 print(f"{author.get_name()}'s biography: ")
                 print(f"{author.get_biography()}")
             break
-
 
 def menu_genre_ops():
     global genre_collection
@@ -325,6 +333,7 @@ def menu_genre_ops():
             genre_description = input(f"Enter the description of \'{genre_name}\': ")
             genre_category = input(f"Enter the category of \'{genre_name}\': ")
             genre_collection = genre_mod.genre_collection_add(genre_name, genre_description, genre_category, genre_collection)
+            print(f"{new_genre} added to Genre collection!")
             save_genres_file()
             break
         elif choice == 2: # View genre details

@@ -19,5 +19,4 @@ def author_collection_add(name, bio, collection):
         collection.append(new_author)
     else:
         collection = [new_author]
-    print(f"{new_author} added to Author collection!")
     return collection

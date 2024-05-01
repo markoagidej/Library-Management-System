@@ -26,5 +26,4 @@ def genre_collection_add(name, description, category, collection):
         collection.append(new_genre)
     else:
         collection = [new_genre]
-    print(f"{new_genre} added to Genre collection!")
     return collection
