@@ -1,3 +1,4 @@
+import user as user_mod
 
 class Book:
     def __init__(self, title, author, ISBN, genre, publication_date, available = True, reserve_list = []):
@@ -39,12 +40,13 @@ class Book:
         return self.__reserve_list
     
     def borrow_book(self, user_ID):
-        if self.available:
-            self.available = False
+        if self.__available:
+            self.__available = False
         else:
-            choice = input("Would you like to be put on the reserve list for this book? (y/n)")
+            choice = input("Would you like to be put on the reserve list for this book? (y/n): ")
             if choice == "y":
-                self.reserve_list.append(user_ID)
+                self.__reserve_list.append(user_ID)
+                print(f"{user_ID} added to the reservation list for {self.__name}")
         return self
 
     def return_book(self):

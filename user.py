@@ -15,7 +15,7 @@ class User:
         return self.__borrow_history
 
     def add_to_borrow_history(self, book):
-        self.__borrow_history.append(book.get_title)
+        self.__borrow_history.append(book.get_title())
         return self
     
 def user_collection_add(name, UUID, collection, borrow_history = []):

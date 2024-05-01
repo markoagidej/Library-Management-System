@@ -22,12 +22,13 @@ def load_file(filename):
                         if not line:
                             break
                         title, author, ISBN, genre, publication_date, available, res_list = line.split(text_deliniator)
+                        available_parsed = available != "False"
                         match = re.search("\\[(.*)\\]", res_list)
                         if match.group(1):
                             res_list_parsed = match.group(1).split(",")
                         else:
                             res_list_parsed = []
-                        book_dict = book_mod.book_collection_add(title, author, ISBN, genre, publication_date, book_dict, bool(available), res_list_parsed)
+                        book_dict = book_mod.book_collection_add(title, author, ISBN, genre, publication_date, book_dict, available_parsed, res_list_parsed)
                     return book_dict
                 elif filename == "users.txt":
                     user_dict = {}
@@ -95,7 +96,8 @@ def save_users_file():
     global user_collection
     with open(f"Files\\users.txt", "w") as file:
         for user in user_collection.values():
-            borrow_list = "[" + ",".join(user.get_borrow_history()) + "]"
+            borrow_test = user.get_borrow_history()
+            borrow_list = "[" + ",".join(borrow_test) + "]"
             file.write(text_deliniator.join([user.get_name(), user.get_UUID(), borrow_list]) + "\n")
             
 def save_authors_file():
@@ -184,7 +186,7 @@ def menu_book_ops():
             save_books_file()
             break
         elif choice == 2: # Borrow/Reserve a book
-            userID = input("Enter the user ID who would like to borrow a book: ")
+            userID = input("Enter the UUID of the user who would like to borrow a book: ")
             try:
                 user_to_borrow = user_collection[userID]
             except KeyError:
@@ -198,9 +200,9 @@ def menu_book_ops():
                 print("No book found with that ISBN!")
                 continue
             
-            book_collection[ISBN] = book_to_borrow.borrow_book(user_to_borrow)
-            if not book_collection[ISBN].reserve_list:
-                user_collection[userID] = user_collection[userID].add_to_borrow_history(book_collection[ISBN])
+            book_collection[ISBN] = book_to_borrow.borrow_book(userID)
+            if book_collection[ISBN].get_available():
+                user_collection[userID] = user_to_borrow.add_to_borrow_history(book_collection[ISBN])
             save_books_file()
             save_users_file()
             break
