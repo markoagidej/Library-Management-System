@@ -2,8 +2,7 @@ https://github.com/markoagidej/Library-Management-System
 
 # Library Management System
 Welcome to the multi-functional Library Manaement System!
-This library is compiled of books, which have an author and a genre. Users can then borrow one book at a time.
-There are time limits on how long you can borrow a book for before you begin incurring late fees to be charge upon return on the book.
+This library is compiled of books, which have an author and a genre. Users can then borrow books.
 This system also features a file interface system where you can load and save formatted data. An automatic backup is also created whenever you make any change.
 
 From the main menu, you will have 5 choices:
@@ -23,12 +22,13 @@ Each choice will open a sub-menu with more options. (Except "Quit")
 
 ### 1. Add a new book
 Add a book to the library!
-You will be asked for a title, author, and genre.
+You will be asked for a title, author, ISBN, genre, and publication date.
+*If you are adding a book wit ha new author or genre, you will be prompted to create those as well!
 
 ### 2. Borrow/Reservse a book
 Lend a book out!
 A valid user must be entered to checkout a book.
-If the book is already borrowed, you will have a choice to be added to that books reservation list. 
+If the book is already borrowed, you will have a choice to be added to that books reservation list. From there, once the book is returned, it will automatically be lent out to the next user.
 
 ### 3. Return a book
 A book return makes it available again!
@@ -69,7 +69,7 @@ When you create a book with a new author, that author is automatically created i
 
 ### 2. View author details
 See how prolific an author is!
-View all books by genre an author has written.
+View a biography of the author.
 
 ### 3. Display all authors
 See all the library's authors!

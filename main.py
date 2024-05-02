@@ -151,6 +151,8 @@ def main():
 def menu_book_ops():
     global book_collection
     global user_collection
+    global author_collection
+    global genre_collection
     while True:
         print("Book Operations:")
         print("1. Add a new book")
@@ -179,6 +181,7 @@ def menu_book_ops():
                     author_collection = author_mod.author_collection_add(author, author_biography, author_collection)
                     print(f"{author} added to Author collection!")
                     save_authors_file()
+                    break
             ISBN = input("Enter the ISBN for the new book: ")
             genre = input("Enter the genre for the new book: ")
             genre_lower = genre.lower()
@@ -187,13 +190,32 @@ def menu_book_ops():
                 existing_genre_list.append(existsing_genre.get_name().lower())
                 if genre_lower not in existing_genre_list:
                     print("Adding new genre to list!")
-                    genre_description = input(f"Enter a description for genre \'{genre}\'")
-                    genre_category = input(f"Enter a category for genre \'{genre}\'")
+                    genre_description = input(f"Enter a description for genre \'{genre}\':")
+                    genre_category = input(f"Enter a category for genre \'{genre}\':")
                     genre_collection = genre_mod.genre_collection_add(genre, genre_description, genre_category, genre_collection)
                     print(f"{genre} added to Genre collection!")
                     save_genres_file()
+                    break
             publication_date = input("Enter the publication date for the new book: ")
-            book_collection = book_mod.book_collection_add(title, author, ISBN, genre, publication_date, book_collection)
+
+            while True:
+                print("Which of the following type of book is this?")
+                print("1. Fiction")
+                print("2. Non-Fiction")
+                print("3. Mystery")
+                print("4. Other")
+                book_choice = input()
+                try:
+                    book_choice = int(book_choice)
+                    if book_choice < 1 or book_choice > 4:
+                        print("Only enter a number 1-4")
+                        continue
+                    break
+                except ValueError:
+                    print("Only enter a number 1-4")
+                    continue
+            book_collection = book_mod.book_collection_add(title, author, ISBN, genre, publication_date, book_collection, book_choice)
+            print(f"{title} added to the Book collection!")
             save_books_file()
             break
         elif choice == 2: # Borrow/Reserve a book

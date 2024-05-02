@@ -1,3 +1,6 @@
 Science Fiction|Works of fiction where major parts of the plot are based around theoretical or exaggerated science|Fiction
+
 Comdedy|The objective of these book is to evoke a humorous response from its reader|Mulitple
+
 Fantasy|Often placed in settings with fanciful magic and creatures|Fiction
+Detective|Hard boiled cops and stripey-suit-wearing bad guys|Mystery
