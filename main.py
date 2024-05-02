@@ -181,6 +181,17 @@ def menu_book_ops():
                     save_authors_file()
             ISBN = input("Enter the ISBN for the new book: ")
             genre = input("Enter the genre for the new book: ")
+            genre_lower = genre.lower()
+            existing_genre_list = []
+            for existsing_genre in genre_collection:
+                existing_genre_list.append(existsing_genre.get_name().lower())
+                if genre_lower not in existing_genre_list:
+                    print("Adding new genre to list!")
+                    genre_description = input(f"Enter a description for genre \'{genre}\'")
+                    genre_category = input(f"Enter a category for genre \'{genre}\'")
+                    genre_collection = genre_mod.genre_collection_add(genre, genre_description, genre_category, genre_collection)
+                    print(f"{genre} added to Genre collection!")
+                    save_genres_file()
             publication_date = input("Enter the publication date for the new book: ")
             book_collection = book_mod.book_collection_add(title, author, ISBN, genre, publication_date, book_collection)
             save_books_file()
